@@ -83,7 +83,6 @@ class CsvWriter
                 fclose($handle);
             }
         }
-
     }
 
     private function isArrayable($obj): bool
