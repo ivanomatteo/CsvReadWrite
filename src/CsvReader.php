@@ -15,10 +15,7 @@ class CsvReader
     private string $esc = "\\";
     private int $maxLineLength = 0;
 
-    private int $line = 0;
-
     private ?array $columns = null;
-    private int $columnsCount = 0;
 
     private bool $trim = false;
     private bool $emptyStringToNull = false;
@@ -26,11 +23,10 @@ class CsvReader
     private ?Closure $mapColumns = null;
     private ?Closure $mapValues = null;
 
-    private array|false|null $row = null;
-
     public function __construct(
         private string $file
-    ) {
+    )
+    {
     }
 
     public function format(string $sep, string $quot = '"', string $esc = "\\"): static
@@ -80,58 +76,59 @@ class CsvReader
     public function iterator(): Iterator
     {
         if (($handle = fopen($this->file, "r")) !== false) {
-            $this->line = 0;
-            while (($this->row = fgetcsv(
-                $handle,
-                $this->maxLineLength,
-                $this->sep,
-                $this->quot,
-                $this->esc
-            )) !== false) {
-                if ($this->line === 0) {
-                    $this->loadColumns();
-                } else {
-                    yield $this->processRow();
+            try {
+                $line = 0;
+                $row = null;
+                while (($row = fgetcsv(
+                        $handle,
+                        $this->maxLineLength,
+                        $this->sep,
+                        $this->quot,
+                        $this->esc
+                    )) !== false) {
+                    if ($line === 0) {
+                        $this->loadColumns($row);
+                    } else {
+                        yield $this->processRow($row, $line);
+                    }
+                    $line++;
                 }
-                $this->line++;
+            } finally {
+                fclose($handle);
             }
-            fclose($handle);
         }
     }
 
-    public function getColumnCount(): int
-    {
-        return $this->columnsCount;
-    }
 
-    private function loadColumns()
+    private function loadColumns(array $row)
     {
         $this->columns = array_values(array_map(function ($c) {
             return trim($c);
-        }, $this->row));
+        }, $row));
+
         if ($this->mapColumns) {
             $this->columns = ($this->mapColumns)($this->columns);
         }
-        $this->columnsCount = count($this->columns);
     }
 
-    private function processRow(): array
+    private function processRow(array $row, int $lineNumber): array
     {
-        for ($i = 0; $i < $this->columnsCount; $i++) {
-            $v = $this->row[$i];
-
+        foreach ($row as $i => $v) {
             if ($this->trim) {
                 $v = trim($v);
             }
             if ($this->emptyStringToNull) {
                 $v = $v === '' ? null : $v;
             }
-            $this->row[$i] = $v;
+            $row[$i] = $v;
         }
-        $assoc = array_combine($this->columns, $this->row);
-        if ($assoc === false) {
-            throw new OutOfBoundsException("row {$this->line} column count " . count($this->row) . " do not match with columns {$this->columnsCount}");
+
+        if (count($this->columns) !== count($row)) {
+            throw new OutOfBoundsException("row {$lineNumber} column count " . count($row) . " do not match with columns " . count($this->columns));
         }
+
+        $assoc = array_combine($this->columns, $row);
+
         if (isset($this->mapValues)) {
             $assoc = ($this->mapValues)($assoc);
         }
