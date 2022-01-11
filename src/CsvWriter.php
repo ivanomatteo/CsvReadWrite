@@ -2,8 +2,8 @@
 
 namespace IvanoMatteo\CsvReadWrite;
 
-use InvalidArgumentException;
 use Exception;
+use InvalidArgumentException;
 use ReflectionClass;
 use stdClass;
 
@@ -38,7 +38,6 @@ class CsvWriter
 
     private $counter = 0;
 
-
     public function __construct(string $file)
     {
         $this->file = $file;
@@ -49,6 +48,7 @@ class CsvWriter
         $this->sep = $sep;
         $this->quot = $quot;
         $this->esc = $esc;
+
         return $this;
     }
 
@@ -76,15 +76,16 @@ class CsvWriter
                     if (is_object($row)) {
                         if ($this->isArrayable($row)) {
                             $row = $row->toArray();
-                        } else if($row instanceof stdClass){
+                        } elseif ($row instanceof stdClass) {
                             $row = (array) $row;
-                        }else{
+                        } else {
                             throw new InvalidArgumentException("Class '".get_class($row)."' do not have toArray() method.");
                         }
                     }
 
                     if ($headers && count($row) !== $headers_count) {
                         $record = $this->counter + 1;
+
                         throw new Exception("record $record column count " . count($row) . " do not match with headers $headers_count");
                     }
 
@@ -99,21 +100,22 @@ class CsvWriter
                 }
             }
         } finally {
-            if (!empty($handle)) {
+            if (! empty($handle)) {
                 fclose($handle);
             }
         }
     }
 
-
-   private function isArrayable($obj){
+    private function isArrayable($obj)
+    {
         $class = new ReflectionClass($obj);
-        if(!$class->hasMethod('toArray')){
+        if (! $class->hasMethod('toArray')) {
             return false;
         }
-        if($class->getMethod('toArray')->getNumberOfRequiredParameters() > 0){
+        if ($class->getMethod('toArray')->getNumberOfRequiredParameters() > 0) {
             return false;
         }
+
         return true;
-   }
+    }
 }
