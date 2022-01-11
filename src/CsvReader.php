@@ -1,56 +1,39 @@
 <?php
+declare(strict_types=1);
 
 namespace IvanoMatteo\CsvReadWrite;
 
-/**
- *
- * @property string $file
- *
- * @property string $sep
- * @property string $quot
- * @property string $esc
- *
- * @property int $maxLineLength
- * @property int $line
- *
- * @property array $columns
- * @property int $columnsCount
- *
- * @property bool $trim
- * @property bool $emptyStringToNull
- *
- * @property callable|null $mapColumns
- * @property callable|null $mapValues
- *
- */
+use Closure;
+use Iterator;
+use OutOfBoundsException;
+
 class CsvReader
 {
-    private $file;
+    private string $sep = ',';
+    private string $quot = '"';
+    private string $esc = "\\";
+    private int $maxLineLength = 0;
 
-    private $sep = ',';
-    private $quot = '"';
-    private $esc = "\\";
-    private $maxLineLength = 0;
+    private int $line = 0;
 
-    private $line;
+    private ?array $columns = null;
+    private int $columnsCount = 0;
 
-    private $columns;
-    private $columnsCount;
+    private bool $trim = false;
+    private bool $emptyStringToNull = false;
 
-    private $trim = false;
-    private $emptyStringToNull = false;
+    private ?Closure $mapColumns = null;
+    private ?Closure $mapValues = null;
 
-    private $mapColumns = null;
-    private $mapValues = null;
+    private ?array $row = null;
 
-    private $row = null;
-
-    public function __construct(string $file)
+    public function __construct(
+        private string $file
+    )
     {
-        $this->file = $file;
     }
 
-    public function format($sep, $quot = '"', $esc = "\\")
+    public function format(string $sep, string $quot = '"', string $esc = "\\"): static
     {
         $this->sep = $sep;
         $this->quot = $quot;
@@ -59,52 +42,47 @@ class CsvReader
         return $this;
     }
 
-    public function maxLineLength($l)
+    public function maxLineLength(int $l): static
     {
         $this->maxLineLength = $l;
-
         return $this;
     }
 
-    public function mapColumns(callable $c)
+    public function mapColumns(callable $c): static
     {
         $this->mapColumns = $c;
-
         return $this;
     }
 
-    public function mapValues(callable $v)
+    public function mapValues(Closure $v): static
     {
         $this->mapValues = $v;
-
         return $this;
     }
 
-    public function trim($b = true)
+    public function trim(bool $b = true): static
     {
         $this->trim = $b;
-
         return $this;
     }
 
-    public function emptyStringToNull($b = true)
+    public function emptyStringToNull(bool $b = true): static
     {
         $this->emptyStringToNull = $b;
-
         return $this;
     }
 
-    public function iterator()
+    public function iterator(): Iterator
     {
         if (($handle = fopen($this->file, "r")) !== false) {
             $this->line = 0;
             while (($this->row = fgetcsv(
-                $handle,
-                $this->maxLineLength,
-                $this->sep,
-                $this->quot,
-                $this->esc
-            )) !== false) {
+                    $handle,
+                    $this->maxLineLength,
+                    $this->sep,
+                    $this->quot,
+                    $this->esc
+                )) !== false) {
                 if ($this->line === 0) {
                     $this->loadColumns();
                 } else {
@@ -116,7 +94,7 @@ class CsvReader
         }
     }
 
-    public function getColumnCount()
+    public function getColumnCount(): int
     {
         return $this->columnsCount;
     }
@@ -126,16 +104,13 @@ class CsvReader
         $this->columns = array_values(array_map(function ($c) {
             return trim($c);
         }, $this->row));
-
-
         if ($this->mapColumns) {
             $this->columns = ($this->mapColumns)($this->columns);
         }
-
         $this->columnsCount = count($this->columns);
     }
 
-    private function processRow()
+    private function processRow(): array
     {
         for ($i = 0; $i < $this->columnsCount; $i++) {
             $v = $this->row[$i];
@@ -150,12 +125,11 @@ class CsvReader
         }
         $assoc = array_combine($this->columns, $this->row);
         if ($assoc === false) {
-            throw new \Exception("row {$this->line} column count " . count($this->row) . " do not match with columns {$this->columnsCount}");
+            throw new OutOfBoundsException("row {$this->line} column count " . count($this->row) . " do not match with columns {$this->columnsCount}");
         }
         if (isset($this->mapValues)) {
             $assoc = ($this->mapValues)($assoc);
         }
-
         return $assoc;
     }
 }
