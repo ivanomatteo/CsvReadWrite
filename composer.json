@@ -1,16 +1,16 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "ivanomatteo/csvreadwrite",
+    "description": "easy way to read and write csv files",
     "keywords": [
-        ":vendor_name",
-        ":package_slug"
+        "ivanomatteo",
+        "csvreadwrite"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/ivanomatteo/csvreadwrite",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Ivano Matteo",
+            "email": "ivanomatteo@gmail.com",
             "role": "Developer"
         }
     ],
@@ -24,12 +24,12 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src"
+            "IvanoMatteo\\CsvReadWrite\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests"
+            "IvanoMatteo\\CsvReadWrite\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -38,7 +38,10 @@
         "format": "vendor/bin/php-cs-fixer fix --allow-risky=yes"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
