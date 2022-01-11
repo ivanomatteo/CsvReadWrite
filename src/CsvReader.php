@@ -25,8 +25,7 @@ class CsvReader
 
     public function __construct(
         private string $file
-    )
-    {
+    ) {
     }
 
     public function format(string $sep, string $quot = '"', string $esc = "\\"): static
@@ -80,12 +79,12 @@ class CsvReader
                 $line = 0;
                 $row = null;
                 while (($row = fgetcsv(
-                        $handle,
-                        $this->maxLineLength,
-                        $this->sep,
-                        $this->quot,
-                        $this->esc
-                    )) !== false) {
+                    $handle,
+                    $this->maxLineLength,
+                    $this->sep,
+                    $this->quot,
+                    $this->esc
+                )) !== false) {
                     if ($line === 0) {
                         $this->loadColumns($row);
                     } else {
@@ -98,7 +97,6 @@ class CsvReader
             }
         }
     }
-
 
     private function loadColumns(array $row)
     {
