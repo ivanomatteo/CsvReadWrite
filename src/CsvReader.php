@@ -26,7 +26,7 @@ class CsvReader
     private ?Closure $mapColumns = null;
     private ?Closure $mapValues = null;
 
-    private ?array $row = null;
+    private array|false|null $row = null;
 
     public function __construct(
         private string $file
