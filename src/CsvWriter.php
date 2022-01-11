@@ -55,7 +55,7 @@ class CsvWriter
                         if ($this->isArrayable($row)) {
                             $row = $row->toArray();
                         } elseif ($row instanceof stdClass) {
-                            $row = (array)$row;
+                            $row = (array) $row;
                         } else {
                             throw new InvalidArgumentException("Class '" . get_class($row) . "' do not have toArray() method.");
                         }
