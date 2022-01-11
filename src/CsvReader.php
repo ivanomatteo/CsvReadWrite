@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IvanoMatteo\CsvReadWrite;
@@ -29,8 +30,7 @@ class CsvReader
 
     public function __construct(
         private string $file
-    )
-    {
+    ) {
     }
 
     public function format(string $sep, string $quot = '"', string $esc = "\\"): static
@@ -45,30 +45,35 @@ class CsvReader
     public function maxLineLength(int $l): static
     {
         $this->maxLineLength = $l;
+
         return $this;
     }
 
     public function mapColumns(callable $c): static
     {
         $this->mapColumns = $c;
+
         return $this;
     }
 
     public function mapValues(Closure $v): static
     {
         $this->mapValues = $v;
+
         return $this;
     }
 
     public function trim(bool $b = true): static
     {
         $this->trim = $b;
+
         return $this;
     }
 
     public function emptyStringToNull(bool $b = true): static
     {
         $this->emptyStringToNull = $b;
+
         return $this;
     }
 
@@ -77,12 +82,12 @@ class CsvReader
         if (($handle = fopen($this->file, "r")) !== false) {
             $this->line = 0;
             while (($this->row = fgetcsv(
-                    $handle,
-                    $this->maxLineLength,
-                    $this->sep,
-                    $this->quot,
-                    $this->esc
-                )) !== false) {
+                $handle,
+                $this->maxLineLength,
+                $this->sep,
+                $this->quot,
+                $this->esc
+            )) !== false) {
                 if ($this->line === 0) {
                     $this->loadColumns();
                 } else {
@@ -130,6 +135,7 @@ class CsvReader
         if (isset($this->mapValues)) {
             $assoc = ($this->mapValues)($assoc);
         }
+
         return $assoc;
     }
 }

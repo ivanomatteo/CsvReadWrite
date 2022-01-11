@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace IvanoMatteo\CsvReadWrite;
@@ -9,7 +10,6 @@ use ReflectionClass;
 use ReflectionException;
 use stdClass;
 
-
 class CsvWriter
 {
     private string $sep = ',';
@@ -18,8 +18,7 @@ class CsvWriter
 
     public function __construct(
         private string $file
-    )
-    {
+    ) {
     }
 
     public function format(string $sep, string $quot = '"', string $esc = "\\"): static
@@ -64,6 +63,7 @@ class CsvWriter
 
                     if ($headers && count($row) !== $headers_count) {
                         $record = $counter + 1;
+
                         throw new OutOfBoundsException("record $record column count " . count($row) . " do not match with headers $headers_count");
                     }
 
@@ -79,7 +79,7 @@ class CsvWriter
                 }
             }
         } finally {
-            if (!empty($handle)) {
+            if (! empty($handle)) {
                 fclose($handle);
             }
         }
@@ -90,12 +90,13 @@ class CsvWriter
         try {
             $class = new ReflectionClass($obj);
 
-            if (!$class->hasMethod('toArray')) {
+            if (! $class->hasMethod('toArray')) {
                 return false;
             }
             if ($class->getMethod('toArray')->getNumberOfRequiredParameters() > 0) {
                 return false;
             }
+
             return true;
         } catch (ReflectionException $e) {
             return false;
