@@ -1,8 +1,8 @@
 # easy way to read and write csv files
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/ivanomatteo/csvreadwrite.svg?style=flat-square)](https://packagist.org/packages/ivanomatteo/csvreadwrite)
-[![Tests](https://github.com/ivanomatteo/csvreadwrite/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/ivanomatteo/csvreadwrite/actions/workflows/run-tests.yml)
-[![Total Downloads](https://img.shields.io/packagist/dt/ivanomatteo/csvreadwrite.svg?style=flat-square)](https://packagist.org/packages/ivanomatteo/csvreadwrite)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/ivanomatteo/csv-read-write.svg?style=flat-square)](https://packagist.org/packages/ivanomatteo/csv-read-write)
+[![Tests](https://github.com/ivanomatteo/csv-read-write/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/ivanomatteo/csv-read-write/actions/workflows/run-tests.yml)
+[![Total Downloads](https://img.shields.io/packagist/dt/ivanomatteo/csv-read-write.svg?style=flat-square)](https://packagist.org/packages/ivanomatteo/csv-read-write)
 
 This is where your description should go. Try and limit it to a paragraph or two. Consider adding a small example.
 
@@ -12,7 +12,7 @@ This is where your description should go. Try and limit it to a paragraph or two
 You can install the package via composer:
 
 ```bash
-composer require ivanomatteo/csvreadwrite
+composer require ivanomatteo/csv-read-write
 ```
 
 ## Usage
