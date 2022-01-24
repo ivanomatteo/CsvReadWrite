@@ -1,5 +1,5 @@
 {
-    "name": "ivanomatteo/csvreadwrite",
+    "name": "ivanomatteo/csv-read-write",
     "description": "easy way to read and write csv files",
     "keywords": [
         "ivanomatteo",
